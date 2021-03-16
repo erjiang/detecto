@@ -264,7 +264,10 @@ def xml_to_csv(xml_folder, output_file=None):
         height = int(size.find('height').text)
 
         # Each object represents each actual image label
-        for member in root.findall('object'):
+        labels = root.findall('object')
+        if not labels:
+            raise ValueError("File '%s' contains no labels" % (xml_file,))
+        for member in labels:
             box = member.find('bndbox')
             label = member.find('name').text
 
