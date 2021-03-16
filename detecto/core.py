@@ -57,7 +57,9 @@ class DataLoader(torch.utils.data.DataLoader):
 
 class Dataset(torch.utils.data.Dataset):
 
-    def __init__(self, label_data, image_folder=None, transform=None):
+    _img_cache = None
+
+    def __init__(self, label_data, image_folder=None, transform=None, cache_images=False):
         """Takes in the path to the label data and images and creates
         an indexable dataset over all of the data. Applies optional
         transforms over the data. Extends PyTorch's `Dataset
@@ -136,6 +138,9 @@ class Dataset(torch.utils.data.Dataset):
         else:
             self.transform = transform
 
+        if cache_images == True:
+            self._img_cache = {}
+
     # Returns the length of this dataset
     def __len__(self):
         # number of entries == number of unique image_ids in csv.
@@ -151,7 +156,15 @@ class Dataset(torch.utils.data.Dataset):
         object_entries = self._csv.loc[self._csv['image_id'] == idx]
 
         img_name = os.path.join(self._root_dir, object_entries.iloc[0, 0])
-        image = read_image(img_name)
+
+        if self._img_cache is not None:
+            if img_name in self._img_cache:
+                image = self._img_cache[img_name]
+            else:
+                image = read_image(img_name)
+                self._img_cache[img_name] = image
+        else:
+            image = read_image(img_name)
 
         boxes = []
         labels = []
