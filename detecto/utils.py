@@ -131,7 +131,10 @@ def read_image(path):
     """
 
     image = cv2.imread(path)
-    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    try:
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    except Exception as e:
+        raise ValueError("Could not read image '%s': %s" % (path, e))
 
 
 def reverse_normalize(image):
