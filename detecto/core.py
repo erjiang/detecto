@@ -546,7 +546,7 @@ class Model:
                 if verbose:
                     print('Loss: {}'.format(avg_loss))
 
-            # Update the learning rate every few epochs
+            # Update the learning rate every epoch
             lr_scheduler.step()
 
         if len(losses) > 0:
@@ -625,6 +625,6 @@ class Model:
 
     # Sends all images and targets to the same device as the model
     def _to_device(self, images, targets):
-        images = [image.to(self._device) for image in images]
+        images = list(image.to(self._device) for image in images)
         targets = [{k: v.to(self._device) for k, v in t.items()} for t in targets]
         return images, targets
