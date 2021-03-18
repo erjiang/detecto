@@ -286,6 +286,10 @@ def show_labeled_image(image, boxes, labels=None):
         image = transforms.ToPILImage()(image)
     ax.imshow(image)
 
+    if len(boxes) == 0 or boxes is None: # can't do "if not boxes"
+        plt.show()
+        return
+
     # Show a single box or multiple if provided
     if boxes.ndim == 1:
         boxes = boxes.view(1, 4)
