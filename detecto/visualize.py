@@ -49,7 +49,7 @@ def detect_live(model, score_filter=0.6):
             if scores[i] < score_filter:
                 continue
 
-            box = boxes[i]
+            box = boxes[i].int()
             cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 3)
             if labels:
                 cv2.putText(frame, '{}: {}'.format(labels[i], round(scores[i].item(), 2)), (box[0], box[1] - 10),
@@ -142,6 +142,7 @@ def detect_video(model, input_file, output_file, fps=30, score_filter=0.6):
             # we need to increase the box dimensions
             # box *= scale_down_factor  # TODO Issue #16
 
+            box = box.int()
             # Create the box around each object detected
             # Parameters: frame, (start_x, start_y), (end_x, end_y), (r, g, b), thickness
             cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 3)
